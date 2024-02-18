@@ -97,7 +97,23 @@ struct FourthCustomer {
     }
     
     func runRRSim() {
+        let waitToEnter = SKAction.wait(forDuration: 6.0)
         
+        //Show customer
+        customerSprite.personSprite.run(SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, Constants.standardFadeIn]))
+        
+        //Then thought bubble and order
+        let orderFadeIn = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, Constants.standardFadeIn])
+        customerSprite.thoughtBubbleSprite.run(orderFadeIn)
+        burgerGray.run(orderFadeIn)
+        
+        //At t=9 this customer has items in order, so gets one turn
+        let waitForTurn = SKAction.wait(forDuration: 3.0)
+        let burgerDone = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForTurn, Constants.foodFadeIn])
+        burgerSprite.run(burgerDone)
+        
+        let checkOnBurger = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForTurn, Constants.waitForFoodFade, Constants.checkmarkFade])
+        burgerCheck.run(checkOnBurger)
     }
     
     func resetSprites() {

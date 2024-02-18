@@ -21,6 +21,10 @@ struct DialogueOverlay {
     
     private let STCFButton, RRButton: SKSpriteNode
     
+    private var buttonNotPressed: SKSpriteNode!
+    
+    private var buttonPressCount = 0
+    
     init(scene: GameScene) {
         self.scene = scene
         
@@ -131,19 +135,24 @@ struct DialogueOverlay {
                 dismissOverlay(state: state)
                 dismissIntroButtons(state: state)
                 scene.runFIFOSim()
+                buttonPressCount += 1
             } else if nodeAtTouch.name == "stcfbutton" {
                 buttonPressedAnimation(on: STCFButton)
+                buttonNotPressed = RRButton
                 scene.resetCustomers()
                 dismissOverlay(state: state)
                 dismissFIFOButtons(state: state)
                 scene.runSTCFSim()
+                buttonPressCount += 1
             } else if nodeAtTouch.name == "rrbutton" {
                 print("rr")
                 buttonPressedAnimation(on: RRButton)
+                buttonNotPressed = STCFButton
                 scene.resetCustomers()
                 dismissFIFOButtons(state: state)
                 dismissOverlay(state: state)
                 scene.runRRSim()
+                buttonPressCount += 1
             }
         }
     }
@@ -205,7 +214,7 @@ struct DialogueOverlay {
             .foregroundColor : UIColor.black
         ]
         
-        let attributedString = NSAttributedString(string: "As you saw, serving orders in \"First In First Out\" order is easy to understand, but customers with small-sized orders wait for a long time if customers with large-sized orders are ahead! Do you have an idea how we could improve things?", attributes: attributes)
+        let attributedString = NSAttributedString(string: "Serving orders in \"First In First Out\" order is easy to understand, but customers with small-sized orders wait for a long time if customers with large-sized orders are ahead! Do you have an idea how to improve things?", attributes: attributes)
         
         talkingBubbleSprite = SKLabelNode(attributedText: attributedString)
         talkingBubbleSprite.preferredMaxLayoutWidth = 550
@@ -218,12 +227,7 @@ struct DialogueOverlay {
         
         showCommonDialogElements()
         
-        let textWait = SKAction.wait(forDuration: 2.5)
-        let fadeInAction = SKAction.fadeIn(withDuration: 1.0)
-        let textActionSequence = SKAction.sequence([textWait, fadeInAction])
-        
-        STCFButton.run(textActionSequence)
-        RRButton.run(textActionSequence)
+        showApppropriateButtons()
     }
     
     mutating func showSTCFDialog() {
@@ -240,7 +244,7 @@ struct DialogueOverlay {
             .foregroundColor : UIColor.black
         ]
         
-        let attributedString = NSAttributedString(string: "By always completing the shortest orders first, we were able to service customers with small orders even when a large order was put in first! But now if a continuous stream of small orders come in, large orders never get serviced leading to starvation! How could we fix that? ", attributes: attributes)
+        let attributedString = NSAttributedString(string: "By always completing the shortest orders first, we were able to service customers with small orders even when a large order was put in first! But now if a continuous stream of small orders come in, large orders never get serviced leading to starvation! How could we fix that?", attributes: attributes)
         
         talkingBubbleSprite = SKLabelNode(attributedText: attributedString)
         talkingBubbleSprite.preferredMaxLayoutWidth = 550
@@ -253,10 +257,51 @@ struct DialogueOverlay {
         
         showCommonDialogElements()
         
+        showApppropriateButtons()
+    }
+    
+    mutating func showRRDialog() {
+        talkingBubbleSprite.removeFromParent()
+        let paragraphStyle: NSMutableParagraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = NSTextAlignment.center
+        paragraphStyle.lineBreakMode = .byWordWrapping
+        
+        let font = UIFont(name: "PublicPixel", size: 26.0)
+        
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font : font!,
+            .paragraphStyle : paragraphStyle,
+            .foregroundColor : UIColor.black
+        ]
+        
+        let attributedString = NSAttributedString(string: "By servicing orders in a cycle giving each customer one item of their order, we can increase the interactivity with each customer even if the wait time doesn't decrease. Customers are happy as they consistently get one item of their order and feel progress is being made!", attributes: attributes)
+        
+        talkingBubbleSprite = SKLabelNode(attributedText: attributedString)
+        talkingBubbleSprite.preferredMaxLayoutWidth = 550
+        talkingBubbleSprite.numberOfLines = 0
+        talkingBubbleSprite.verticalAlignmentMode = .top
+        talkingBubbleSprite.alpha = 0
+        
+        talkingBubbleSprite.position = CGPoint(x: 700, y: 700)
+        scene.addChild(talkingBubbleSprite)
+        
+        showCommonDialogElements()
+        
+        showApppropriateButtons()
+    }
+    
+    func showApppropriateButtons() {
         let textWait = SKAction.wait(forDuration: 2.5)
         let fadeInAction = SKAction.fadeIn(withDuration: 1.0)
         let textActionSequence = SKAction.sequence([textWait, fadeInAction])
         
-        RRButton.run(textActionSequence)
+        if (buttonPressCount == 1) {
+            RRButton.run(textActionSequence)
+            STCFButton.run(textActionSequence)
+        } else if (buttonPressCount == 2) {
+            buttonNotPressed.run(textActionSequence)
+        } else {
+            yeahButton.run(textActionSequence)
+        }
     }
 }

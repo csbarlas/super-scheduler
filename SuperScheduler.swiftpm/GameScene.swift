@@ -70,7 +70,15 @@ class GameScene: SKScene {
     }
     
     func runRRSim() {
-        
+        simState = .RR
+        firstCustomer.runRRSim()
+        secondCustomer.runRRSim()
+        thirdCustomer.runRRSim()
+        fourthCustomer.runRRSim()
+    }
+    
+    func showRRDialog() {
+        dialogueOverlay.showRRDialog()
     }
     
     func resetCustomers() {
