@@ -56,4 +56,27 @@ class GameScene: SKScene {
     func showFIFODialog() {
         dialogueOverlay.showFIFODialog()
     }
+    
+    func showSTCFDialog() {
+        dialogueOverlay.showSTCFDialog()
+    }
+    
+    func runSTCFSim() {
+        simState = .STCF
+        firstCustomer.runSTCFSim()
+        secondCustomer.runSTCFSim()
+        thirdCustomer.runSTCFSim()
+        fourthCustomer.runSTCFSim()
+    }
+    
+    func runRRSim() {
+        
+    }
+    
+    func resetCustomers() {
+        firstCustomer.resetSprites()
+        secondCustomer.resetSprites()
+        thirdCustomer.resetSprites()
+        fourthCustomer.resetSprites()
+    }
 }

@@ -76,4 +76,37 @@ struct FourthCustomer {
         let showDialogSeq = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForOtherOrders, Constants.waitForFoodFade, Constants.standardWait, showDialog])
         scene.run(showDialogSeq)
     }
+    
+    func runSTCFSim() {
+        let waitToEnter = SKAction.wait(forDuration: 6.0)
+        
+        //Show customer
+        customerSprite.personSprite.run(SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, Constants.standardFadeIn]))
+        
+        //Then thought bubble and order
+        let orderFadeIn = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, Constants.standardFadeIn])
+        customerSprite.thoughtBubbleSprite.run(orderFadeIn)
+        burgerGray.run(orderFadeIn)
+        
+        //At t=6 this customer has shortest order, gets worked on
+        let burgerDone = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, Constants.foodFadeIn])
+        burgerSprite.run(burgerDone)
+        
+        let checkOnBurger = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, Constants.waitForFoodFade, Constants.checkmarkFade])
+        burgerCheck.run(checkOnBurger)
+    }
+    
+    func runRRSim() {
+        
+    }
+    
+    func resetSprites() {
+        let fadeOut = SKAction.fadeOut(withDuration: 1.0)
+        let spritesToFade = [burgerCheck, burgerSprite, burgerGray]
+        for sprite in spritesToFade {
+            sprite.run(fadeOut)
+        }
+        customerSprite.personSprite.run(fadeOut)
+        customerSprite.thoughtBubbleSprite.run(fadeOut)
+    }
 }

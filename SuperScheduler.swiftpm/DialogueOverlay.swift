@@ -133,10 +133,17 @@ struct DialogueOverlay {
                 scene.runFIFOSim()
             } else if nodeAtTouch.name == "stcfbutton" {
                 buttonPressedAnimation(on: STCFButton)
-                print("stcf")
+                scene.resetCustomers()
+                dismissOverlay(state: state)
+                dismissFIFOButtons(state: state)
+                scene.runSTCFSim()
             } else if nodeAtTouch.name == "rrbutton" {
-                buttonPressedAnimation(on: RRButton)
                 print("rr")
+                buttonPressedAnimation(on: RRButton)
+                scene.resetCustomers()
+                dismissFIFOButtons(state: state)
+                dismissOverlay(state: state)
+                scene.runRRSim()
             }
         }
     }
@@ -216,6 +223,40 @@ struct DialogueOverlay {
         let textActionSequence = SKAction.sequence([textWait, fadeInAction])
         
         STCFButton.run(textActionSequence)
+        RRButton.run(textActionSequence)
+    }
+    
+    mutating func showSTCFDialog() {
+        talkingBubbleSprite.removeFromParent()
+        let paragraphStyle: NSMutableParagraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = NSTextAlignment.center
+        paragraphStyle.lineBreakMode = .byWordWrapping
+        
+        let font = UIFont(name: "PublicPixel", size: 26.0)
+        
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font : font!,
+            .paragraphStyle : paragraphStyle,
+            .foregroundColor : UIColor.black
+        ]
+        
+        let attributedString = NSAttributedString(string: "By always completing the shortest orders first, we were able to service customers with small orders even when a large order was put in first! But now if a continuous stream of small orders come in, large orders never get serviced leading to starvation! How could we fix that? ", attributes: attributes)
+        
+        talkingBubbleSprite = SKLabelNode(attributedText: attributedString)
+        talkingBubbleSprite.preferredMaxLayoutWidth = 550
+        talkingBubbleSprite.numberOfLines = 0
+        talkingBubbleSprite.verticalAlignmentMode = .top
+        talkingBubbleSprite.alpha = 0
+        
+        talkingBubbleSprite.position = CGPoint(x: 700, y: 700)
+        scene.addChild(talkingBubbleSprite)
+        
+        showCommonDialogElements()
+        
+        let textWait = SKAction.wait(forDuration: 2.5)
+        let fadeInAction = SKAction.fadeIn(withDuration: 1.0)
+        let textActionSequence = SKAction.sequence([textWait, fadeInAction])
+        
         RRButton.run(textActionSequence)
     }
 }

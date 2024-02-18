@@ -67,5 +67,42 @@ struct SecondCustomer {
         let checkOnDrink = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstOrderDone, Constants.waitForFoodFade, Constants.checkmarkFade])
         drinkCheck.run(checkOnDrink)
     }
+    
+    func runSTCFSim() {
+        //Time after sim start
+        let waitToEnter = SKAction.wait(forDuration: 3.0)
+        
+        //Show customer
+        customerSprite.personSprite.run(SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, Constants.standardFadeIn]))
+        
+        //Then thought bubble and order
+        let orderFadeIn = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, Constants.standardFadeIn])
+        customerSprite.thoughtBubbleSprite.run(orderFadeIn)
+        grayDrink.run(orderFadeIn)
+        
+        //Second customer has shortest order at t=3, so drink gets worked on
+        let waitForFirstCustomerBurger = SKAction.wait(forDuration: 0)
+        let drinkDone = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstCustomerBurger, Constants.foodFadeIn])
+        drinkSprite.run(drinkDone)
+        
+        let checkOnDrink = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstCustomerBurger, Constants.waitForFoodFade, Constants.checkmarkFade])
+        drinkCheck.run(checkOnDrink)
+        
+        //Thats all for this customer
+    }
+    
+    func runRRSim() {
+        
+    }
+    
+    func resetSprites() {
+        let fadeOut = SKAction.fadeOut(withDuration: 1.0)
+        let spritesToFade = [drinkCheck, drinkSprite, grayDrink]
+        for sprite in spritesToFade {
+            sprite.run(fadeOut)
+        }
+        customerSprite.personSprite.run(fadeOut)
+        customerSprite.thoughtBubbleSprite.run(fadeOut)
+    }
 }
 
