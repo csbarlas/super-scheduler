@@ -10,20 +10,17 @@ import SpriteKit
 
 struct DialogueOverlay {
     private let scene: GameScene
-    
-    private let employeeSprite, background: SKSpriteNode
-    
-    private var talkingBubbleSprite: SKLabelNode
-    
-    private let textBubbleSprite: SKSpriteNode
-    
-    private let yeahButton: SKSpriteNode
-    
-    private let STCFButton, RRButton: SKSpriteNode
-    
+    private let employeeSprite, background, textBubbleSprite, yeahButton, STCFButton, RRButton: SKSpriteNode
+    private var textSprite: SKLabelNode
     private var buttonNotPressed: SKSpriteNode!
-    
     private var buttonPressCount = 0
+    private var paragraphStyle = NSMutableParagraphStyle()
+    private var font: UIFont
+    private var attributes: [NSAttributedString.Key: Any]
+    private var attributedString: NSMutableAttributedString = NSMutableAttributedString(string: "")
+    private let fifoText = "Serving orders in \"First In First Out\" order is easy to understand, but customers with small-sized orders wait for a long time if customers with large-sized orders are ahead! Do you have an idea how to improve things?"
+    private let stcfText = "By always completing the shortest orders first, we were able to service customers with small orders even when a large order was put in first! But now if a continuous stream of small orders come in, large orders never get serviced leading to starvation! How could we fix that?"
+    private let rrText = "By servicing orders in a cycle giving each customer one item of their order, we can increase the interactivity with each customer even if the wait time doesn't decrease. Customers are happy as they consistently get one item of their order and feel progress is being made!"
     
     init(scene: GameScene) {
         self.scene = scene
@@ -37,7 +34,6 @@ struct DialogueOverlay {
         employeeSprite.position = CGPoint(x: -192, y: 192)
         employeeSprite.texture?.filteringMode = .nearest
         employeeSprite.scale(to: CGSize(width: 384, height: 384))
-        
         scene.addChild(employeeSprite)
         
         textBubbleSprite = SKSpriteNode(imageNamed: "textbubble")
@@ -47,56 +43,52 @@ struct DialogueOverlay {
         textBubbleSprite.alpha = 0
         scene.addChild(textBubbleSprite)
         
-        let cfURL = Bundle.main.url(forResource: "PublicPixel", withExtension: "ttf")! as CFURL
-        //let _ = CTFontManagerRegisterFontURLs(cfURL, CTFontManagerScope.process, nil)
-        CTFontManagerRegisterFontsForURL(cfURL, CTFontManagerScope.process, nil)
-        
-        let paragraphStyle: NSMutableParagraphStyle = NSMutableParagraphStyle()
+        paragraphStyle =  NSMutableParagraphStyle()
         paragraphStyle.alignment = NSTextAlignment.center
         paragraphStyle.lineBreakMode = .byWordWrapping
+        let cfURL = Bundle.main.url(forResource: "PublicPixel", withExtension: "ttf")! as CFURL
+        CTFontManagerRegisterFontsForURL(cfURL, CTFontManagerScope.process, nil)
+        font = UIFont(name: "PublicPixel", size: 26.0) ?? UIFont.systemFont(ofSize: 26.0)
+        attributes = [
+                .font : font,
+                .paragraphStyle : paragraphStyle,
+                .foregroundColor : UIColor.black
+            ]
         
-        let font = UIFont(name: "PublicPixel", size: 32.0)
-        
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font : font!,
-            .paragraphStyle : paragraphStyle,
-            .foregroundColor : UIColor.black
-        ]
-        
-        let attributedString = NSAttributedString(string: "Hi! I'm Bob, and feeling overwhelmed working the lunch hour rush. I need to find the best way to service the line of customers so they wait as little time as possible. Can you help me?", attributes: attributes)
-        
-        talkingBubbleSprite = SKLabelNode(attributedText: attributedString)
-        talkingBubbleSprite.preferredMaxLayoutWidth = 550
-        talkingBubbleSprite.numberOfLines = 0
-        talkingBubbleSprite.verticalAlignmentMode = .top
-        talkingBubbleSprite.alpha = 0
-        
-        talkingBubbleSprite.position = CGPoint(x: 700, y: 700)
-        scene.addChild(talkingBubbleSprite)
+        let introText = "Hi! I'm Bob, and feeling overwhelmed working the lunch hour rush. I need to find the best way to service the line of customers so they wait as little time as possible. Can you help me?"
+        attributedString.mutableString.setString(introText)
+        attributedString.setAttributes(attributes, range: NSMakeRange(0, introText.count))
+        textSprite = SKLabelNode(attributedText: attributedString)
+        textSprite.preferredMaxLayoutWidth = 550
+        textSprite.numberOfLines = 0
+        textSprite.verticalAlignmentMode = .top
+        textSprite.alpha = 0
+        textSprite.position = CGPoint(x: 700, y: 700)
+        scene.addChild(textSprite)
         
         yeahButton = SKSpriteNode(imageNamed: "yeahbutton")
         yeahButton.name = "yeahbutton"
         yeahButton.position = CGPoint(x: 700, y: 150)
-        yeahButton.alpha = 0
         yeahButton.texture?.filteringMode = .nearest
-        scene.addChild(yeahButton)
+        yeahButton.alpha = 0
         
         STCFButton = SKSpriteNode(imageNamed: "stcf-button")
         STCFButton.name = "stcfbutton"
         STCFButton.position = CGPoint(x: 550, y: 150)
-        STCFButton.setScale(0.6)
-        STCFButton.texture?.filteringMode = .nearest
-        STCFButton.alpha = 0
-        scene.addChild(STCFButton)
         
         RRButton = SKSpriteNode(imageNamed: "roundrobin-button")
         RRButton.name = "rrbutton"
         RRButton.position = CGPoint(x: 865, y: 150)
-        RRButton.setScale(0.6)
-        RRButton.texture?.filteringMode = .nearest
-        RRButton.alpha = 0
-        scene.addChild(RRButton)
         
+        for button in [STCFButton, RRButton] {
+            button.setScale(0.6)
+            button.texture?.filteringMode = .nearest
+            button.alpha = 0
+        }
+        
+        scene.addChild(yeahButton)
+        scene.addChild(STCFButton)
+        scene.addChild(RRButton)
     }
     
     private func showCommonDialogElements() {
@@ -113,7 +105,7 @@ struct DialogueOverlay {
         
         background.run(dimScreenAction)
         employeeSprite.run(actionSequence)
-        talkingBubbleSprite.run(textActionSequence)
+        textSprite.run(textActionSequence)
         textBubbleSprite.run(textActionSequence)
     }
     
@@ -133,7 +125,7 @@ struct DialogueOverlay {
             if nodeAtTouch.name == "yeahbutton" {
                 buttonPressedAnimation(on: yeahButton)
                 dismissOverlay(state: state)
-                dismissIntroButtons(state: state)
+                fadeOutButtons(state: state)
                 scene.runFIFOSim()
                 buttonPressCount += 1
             } else if nodeAtTouch.name == "stcfbutton" {
@@ -141,15 +133,14 @@ struct DialogueOverlay {
                 buttonNotPressed = RRButton
                 scene.resetCustomers()
                 dismissOverlay(state: state)
-                dismissFIFOButtons(state: state)
+                fadeOutButtons(state: state)
                 scene.runSTCFSim()
                 buttonPressCount += 1
             } else if nodeAtTouch.name == "rrbutton" {
-                print("rr")
                 buttonPressedAnimation(on: RRButton)
                 buttonNotPressed = STCFButton
                 scene.resetCustomers()
-                dismissFIFOButtons(state: state)
+                fadeOutButtons(state: state)
                 dismissOverlay(state: state)
                 scene.runRRSim()
                 buttonPressCount += 1
@@ -181,113 +172,34 @@ struct DialogueOverlay {
         let fadeOutAction = SKAction.fadeOut(withDuration: 1.0)
         let textActionSequence = SKAction.sequence([fadeOutAction])
         
-        talkingBubbleSprite.run(textActionSequence)
+        textSprite.run(textActionSequence)
         textBubbleSprite.run(textActionSequence)
-        
         employeeSprite.run(actionSequence)
-        
         background.run(backgroundActions)
     }
-    
-    func dismissIntroButtons(state: SimState) {
-        let fadeOutAction = SKAction.fadeOut(withDuration: 1.0)
-        yeahButton.run(fadeOutAction)
+        
+    func fadeOutButtons(state: SimState) {
+        for button in [yeahButton, RRButton, STCFButton] {
+            button.run(SKAction.fadeOut(withDuration: 1.0))
+        }
     }
     
-    func dismissFIFOButtons(state: SimState) {
-        let fadeOutAction = SKAction.fadeOut(withDuration: 1.0)
-        STCFButton.run(fadeOutAction)
-        RRButton.run(fadeOutAction)
+    mutating func showDialog(_ text: String) {
+        updateText(text)
+        showCommonDialogElements()
+        showApppropriateButtons()
     }
     
     mutating func showFIFODialog() {
-        talkingBubbleSprite.removeFromParent()
-        let paragraphStyle: NSMutableParagraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = NSTextAlignment.center
-        paragraphStyle.lineBreakMode = .byWordWrapping
-        
-        let font = UIFont(name: "PublicPixel", size: 26.0)
-        
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font : font!,
-            .paragraphStyle : paragraphStyle,
-            .foregroundColor : UIColor.black
-        ]
-        
-        let attributedString = NSAttributedString(string: "Serving orders in \"First In First Out\" order is easy to understand, but customers with small-sized orders wait for a long time if customers with large-sized orders are ahead! Do you have an idea how to improve things?", attributes: attributes)
-        
-        talkingBubbleSprite = SKLabelNode(attributedText: attributedString)
-        talkingBubbleSprite.preferredMaxLayoutWidth = 550
-        talkingBubbleSprite.numberOfLines = 0
-        talkingBubbleSprite.verticalAlignmentMode = .top
-        talkingBubbleSprite.alpha = 0
-        
-        talkingBubbleSprite.position = CGPoint(x: 700, y: 700)
-        scene.addChild(talkingBubbleSprite)
-        
-        showCommonDialogElements()
-        
-        showApppropriateButtons()
+        showDialog(fifoText)
     }
     
     mutating func showSTCFDialog() {
-        talkingBubbleSprite.removeFromParent()
-        let paragraphStyle: NSMutableParagraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = NSTextAlignment.center
-        paragraphStyle.lineBreakMode = .byWordWrapping
-        
-        let font = UIFont(name: "PublicPixel", size: 26.0)
-        
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font : font!,
-            .paragraphStyle : paragraphStyle,
-            .foregroundColor : UIColor.black
-        ]
-        
-        let attributedString = NSAttributedString(string: "By always completing the shortest orders first, we were able to service customers with small orders even when a large order was put in first! But now if a continuous stream of small orders come in, large orders never get serviced leading to starvation! How could we fix that?", attributes: attributes)
-        
-        talkingBubbleSprite = SKLabelNode(attributedText: attributedString)
-        talkingBubbleSprite.preferredMaxLayoutWidth = 550
-        talkingBubbleSprite.numberOfLines = 0
-        talkingBubbleSprite.verticalAlignmentMode = .top
-        talkingBubbleSprite.alpha = 0
-        
-        talkingBubbleSprite.position = CGPoint(x: 700, y: 700)
-        scene.addChild(talkingBubbleSprite)
-        
-        showCommonDialogElements()
-        
-        showApppropriateButtons()
+        showDialog(stcfText)
     }
     
     mutating func showRRDialog() {
-        talkingBubbleSprite.removeFromParent()
-        let paragraphStyle: NSMutableParagraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = NSTextAlignment.center
-        paragraphStyle.lineBreakMode = .byWordWrapping
-        
-        let font = UIFont(name: "PublicPixel", size: 26.0)
-        
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font : font!,
-            .paragraphStyle : paragraphStyle,
-            .foregroundColor : UIColor.black
-        ]
-        
-        let attributedString = NSAttributedString(string: "By servicing orders in a cycle giving each customer one item of their order, we can increase the interactivity with each customer even if the wait time doesn't decrease. Customers are happy as they consistently get one item of their order and feel progress is being made!", attributes: attributes)
-        
-        talkingBubbleSprite = SKLabelNode(attributedText: attributedString)
-        talkingBubbleSprite.preferredMaxLayoutWidth = 550
-        talkingBubbleSprite.numberOfLines = 0
-        talkingBubbleSprite.verticalAlignmentMode = .top
-        talkingBubbleSprite.alpha = 0
-        
-        talkingBubbleSprite.position = CGPoint(x: 700, y: 700)
-        scene.addChild(talkingBubbleSprite)
-        
-        showCommonDialogElements()
-        
-        showApppropriateButtons()
+        showDialog(rrText)
     }
     
     func showApppropriateButtons() {
@@ -303,5 +215,11 @@ struct DialogueOverlay {
         } else {
             yeahButton.run(textActionSequence)
         }
+    }
+    
+    mutating func updateText(_ text: String) {
+        attributedString.mutableString.setString(text)
+        attributedString.setAttributes(attributes, range: NSMakeRange(0, text.count))
+        textSprite.attributedText = attributedString
     }
 }
