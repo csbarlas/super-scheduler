@@ -40,14 +40,6 @@ struct FoodSprite {
         graySprite.run(action)
     }
     
-    func runActionOnColorSprite(_ action: SKAction) {
-        colorSprite.run(action)
-    }
-    
-    func runActionOnCheckmarkSprite(_ action: SKAction) {
-        checkmarkSprite.run(action)
-    }
-    
     func runActionOnAllSprites(_ action: SKAction) {
         for sprite in [graySprite, colorSprite, checkmarkSprite] {
             sprite.run(action)
@@ -60,5 +52,10 @@ struct FoodSprite {
         
         let checkFadeIn = SKAction.sequence(delay + [Constants.waitForFoodFade, Constants.checkmarkFade])
         checkmarkSprite.run(checkFadeIn)
+    }
+    
+    func startEntranceAnimation(_ delay: [SKAction]) {
+        let actions = SKAction.sequence(delay + [Constants.standardFadeIn])
+        graySprite.run(actions)
     }
 }

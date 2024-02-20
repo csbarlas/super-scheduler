@@ -27,86 +27,45 @@ struct ThirdCustomer {
     
     func runFIFOSim() {
         let waitToEnter = SKAction.wait(forDuration: 3.0)
-        
-        //Show customer
-        customerSprite.personSprite.run(SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, Constants.standardFadeIn]))
-        
-        //Then thought bubble and order
-        let orderFadeIn = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, Constants.standardFadeIn])
-        customerSprite.thoughtBubbleSprite.run(orderFadeIn)
-        burgerSprite.runActionOnGraySprite(orderFadeIn)
-        friesSprite.runActionOnGraySprite(orderFadeIn)
+        let entranceDelay = [Constants.waitForDialog, Constants.standardWait, waitToEnter]
+        startEntranceAnimation(entranceDelay)
         
         let waitForFirstOrderDone = SKAction.wait(forDuration: 9.0)
-        let burgerDone = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstOrderDone, Constants.foodFadeIn])
-        burgerSprite.runActionOnColorSprite(burgerDone)
+        let burgerDelay = [Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstOrderDone]
+        burgerSprite.startCompletionAnimation(burgerDelay)
         
-        let checkOnBurger = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstOrderDone, Constants.waitForFoodFade, Constants.checkmarkFade])
-        burgerSprite.runActionOnCheckmarkSprite(checkOnBurger)
-        
-        let friesDone = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstOrderDone, Constants.waitForFoodFade, Constants.foodFadeIn])
-        friesSprite.runActionOnColorSprite(friesDone)
-        
-        let checkOnFries = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstOrderDone, Constants.waitForFoodFade, Constants.waitForFoodFade, Constants.checkmarkFade])
-        friesSprite.runActionOnCheckmarkSprite(checkOnFries)
+        let friesDelay = [Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstOrderDone, Constants.waitForFoodFade]
+        friesSprite.startCompletionAnimation(friesDelay)
     }
     
     func runSTCFSim() {
         let waitToEnter = SKAction.wait(forDuration: 3.0)
-        
-        //Show customer
-        customerSprite.personSprite.run(SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, Constants.standardFadeIn]))
-        
-        //Then thought bubble and order
-        let orderFadeIn = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, Constants.standardFadeIn])
-        
-        let newSeq = orderFadeIn
-        customerSprite.thoughtBubbleSprite.run(orderFadeIn)
-        burgerSprite.runActionOnGraySprite(orderFadeIn)
-        friesSprite.runActionOnGraySprite(orderFadeIn)
+        let entranceDelay = [Constants.waitForDialog, Constants.standardWait, waitToEnter]
+        startEntranceAnimation(entranceDelay)
         
         // At t=9 this customer gets their order finished
         let waitForFirstOrderDone = SKAction.wait(forDuration: 6.0)
-        let burgerDone = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstOrderDone, Constants.foodFadeIn])
-        burgerSprite.runActionOnColorSprite(burgerDone)
+        let burgerDelay = [Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstOrderDone]
+        burgerSprite.startCompletionAnimation(burgerDelay)
         
-        let checkOnBurger = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstOrderDone, Constants.waitForFoodFade, Constants.checkmarkFade])
-        burgerSprite.runActionOnCheckmarkSprite(checkOnBurger)
-        
-        let friesDone = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstOrderDone, Constants.waitForFoodFade, Constants.foodFadeIn])
-        friesSprite.runActionOnColorSprite(friesDone)
-        
-        let checkOnFries = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstOrderDone, Constants.waitForFoodFade, Constants.waitForFoodFade, Constants.checkmarkFade])
-        friesSprite.runActionOnCheckmarkSprite(checkOnFries)
+        let friesDelay = [Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstOrderDone, Constants.waitForFoodFade]
+        friesSprite.startCompletionAnimation(friesDelay)
     }
     
     func runRRSim() {
         let waitToEnter = SKAction.wait(forDuration: 3.0)
-        
-        //Show customer
-        customerSprite.personSprite.run(SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, Constants.standardFadeIn]))
-        
-        //Then thought bubble and order
-        let orderFadeIn = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, Constants.standardFadeIn])
-        customerSprite.thoughtBubbleSprite.run(orderFadeIn)
-        burgerSprite.runActionOnGraySprite(orderFadeIn)
-        friesSprite.runActionOnGraySprite(orderFadeIn)
+        let entranceDelay = [Constants.waitForDialog, Constants.standardWait, waitToEnter]
+        startEntranceAnimation(entranceDelay)
         
         // At t=6, this customer gets one item in order completed
         let waitForFirstTurn = SKAction.wait(forDuration: 3.0)
-        let burgerDone = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstTurn, Constants.foodFadeIn])
-        burgerSprite.runActionOnColorSprite(burgerDone)
-        
-        let checkOnBurger = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstTurn, Constants.waitForFoodFade, Constants.checkmarkFade])
-        burgerSprite.runActionOnCheckmarkSprite(checkOnBurger)
+        let burgerDelay = [Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstTurn]
+        burgerSprite.startCompletionAnimation(burgerDelay)
         
         //At t=15 this customer gets another turn
         let waitForSecondTurn = SKAction.wait(forDuration: 3.0)
-        let friesDone = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstTurn, Constants.waitForFoodFade, Constants.waitForFoodFade, waitForSecondTurn, Constants.foodFadeIn])
-        friesSprite.runActionOnColorSprite(friesDone)
-        
-        let checkOnFries = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstTurn, Constants.waitForFoodFade, Constants.waitForFoodFade, waitForSecondTurn, Constants.waitForFoodFade, Constants.checkmarkFade])
-        friesSprite.runActionOnCheckmarkSprite(checkOnFries)
+        let friesDelay = [Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstTurn, Constants.waitForFoodFade, Constants.waitForFoodFade, waitForSecondTurn]
+        friesSprite.startCompletionAnimation(friesDelay)
     }
     
     func resetSprites() {
@@ -115,5 +74,12 @@ struct ThirdCustomer {
         friesSprite.runActionOnAllSprites(fadeOut)
         customerSprite.personSprite.run(fadeOut)
         customerSprite.thoughtBubbleSprite.run(fadeOut)
+    }
+    
+    private func startEntranceAnimation(_ delay: [SKAction]) {
+        customerSprite.startEntranceAnimation(delay)
+        for sprite in [burgerSprite, friesSprite] {
+            sprite.startEntranceAnimation(delay)
+        }
     }
 }

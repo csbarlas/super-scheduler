@@ -31,4 +31,10 @@ struct CustomerSprite {
         thoughtBubbleSprite.alpha = 0
         scene.addChild(thoughtBubbleSprite)
     }
+    
+    func startEntranceAnimation(_ delay: [SKAction]) {
+        let actions = SKAction.sequence(delay + [Constants.standardFadeIn])
+        personSprite.run(actions)
+        thoughtBubbleSprite.run(actions)
+    }
 }
