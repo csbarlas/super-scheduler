@@ -18,6 +18,7 @@ enum Constants {
     static let fourthCustomerPos: CGPoint = CGPoint(x: 896, y: 240)
     static let thoughtBubbleOffset: CGFloat = 288
     static let checkmarkSpriteSize = CGSize(width: 110, height: 110)
+    static let foodSpriteSize = CGSize(width: 90, height: 90)
     
     static let waitForDialog = SKAction.wait(forDuration: 4.5)
     static let foodFadeIn = SKAction.fadeIn(withDuration: 3.0)

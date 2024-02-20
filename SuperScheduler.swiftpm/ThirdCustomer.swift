@@ -10,67 +10,19 @@ import SpriteKit
 
 struct ThirdCustomer {
     private let scene: GameScene
-    
     private let customerSprite: CustomerSprite
-    
-    private let burgerSprite, friesSprite: SKSpriteNode
-    private let grayBurger, grayFries: SKSpriteNode
-    private let burgerCheck, friesCheck: SKSpriteNode
+    private let burgerSprite, friesSprite: FoodSprite
     
     init(scene: GameScene) {
         self.scene = scene
         customerSprite = CustomerSprite(scene: scene, customerTexture: "Person1", pos: Constants.firstCustomerPos)
         
-        let foodSpriteSize = CGSize(width: 90, height: 90)
-        
         //Positions for three items
         let centerLeft = CGPoint(x: Constants.firstCustomerPos.x - 55, y: Constants.firstCustomerPos.y + 330)
         let centerRight = CGPoint(x: Constants.firstCustomerPos.x + 60, y: Constants.firstCustomerPos.y + 330)
         
-        burgerSprite = SKSpriteNode(imageNamed: "burger")
-        burgerSprite.texture?.filteringMode = .nearest
-        burgerSprite.scale(to: foodSpriteSize)
-        burgerSprite.position = centerLeft
-        burgerSprite.alpha = 0
-        
-        grayBurger = SKSpriteNode(imageNamed: "burger-gray")
-        grayBurger.texture?.filteringMode = .nearest
-        grayBurger.scale(to: foodSpriteSize)
-        grayBurger.position = centerLeft
-        grayBurger.alpha = 0
-        
-        burgerCheck = SKSpriteNode(imageNamed: "checkmark")
-        burgerCheck.texture?.filteringMode = .nearest
-        burgerCheck.scale(to: Constants.checkmarkSpriteSize)
-        burgerCheck.position = centerLeft
-        burgerCheck.alpha = 0
-        
-        friesSprite = SKSpriteNode(imageNamed: "fries")
-        friesSprite.texture?.filteringMode = .nearest
-        friesSprite.scale(to: foodSpriteSize)
-        friesSprite.position = centerRight
-        friesSprite.alpha = 0
-        
-        grayFries = SKSpriteNode(imageNamed: "fries-gray")
-        grayFries.texture?.filteringMode = .nearest
-        grayFries.scale(to: foodSpriteSize)
-        grayFries.position = centerRight
-        grayFries.alpha = 0
-        
-        friesCheck = SKSpriteNode(imageNamed: "checkmark")
-        friesCheck.texture?.filteringMode = .nearest
-        friesCheck.scale(to: Constants.checkmarkSpriteSize)
-        friesCheck.position = centerRight
-        friesCheck.alpha = 0
-        
-        scene.addChild(grayBurger)
-        scene.addChild(grayFries)
-        
-        scene.addChild(burgerSprite)
-        scene.addChild(friesSprite)
-        
-        scene.addChild(burgerCheck)
-        scene.addChild(friesCheck)
+        burgerSprite = FoodSprite(scene: scene, position: centerLeft, imageNamed: "burger")
+        friesSprite = FoodSprite(scene: scene, position: centerRight, imageNamed: "fries")
     }
     
     func runFIFOSim() {
@@ -82,21 +34,21 @@ struct ThirdCustomer {
         //Then thought bubble and order
         let orderFadeIn = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, Constants.standardFadeIn])
         customerSprite.thoughtBubbleSprite.run(orderFadeIn)
-        grayBurger.run(orderFadeIn)
-        grayFries.run(orderFadeIn)
+        burgerSprite.runActionOnGraySprite(orderFadeIn)
+        friesSprite.runActionOnGraySprite(orderFadeIn)
         
         let waitForFirstOrderDone = SKAction.wait(forDuration: 9.0)
         let burgerDone = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstOrderDone, Constants.foodFadeIn])
-        burgerSprite.run(burgerDone)
+        burgerSprite.runActionOnColorSprite(burgerDone)
         
         let checkOnBurger = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstOrderDone, Constants.waitForFoodFade, Constants.checkmarkFade])
-        burgerCheck.run(checkOnBurger)
+        burgerSprite.runActionOnCheckmarkSprite(checkOnBurger)
         
         let friesDone = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstOrderDone, Constants.waitForFoodFade, Constants.foodFadeIn])
-        friesSprite.run(friesDone)
+        friesSprite.runActionOnColorSprite(friesDone)
         
         let checkOnFries = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstOrderDone, Constants.waitForFoodFade, Constants.waitForFoodFade, Constants.checkmarkFade])
-        friesCheck.run(checkOnFries)
+        friesSprite.runActionOnCheckmarkSprite(checkOnFries)
     }
     
     func runSTCFSim() {
@@ -107,23 +59,25 @@ struct ThirdCustomer {
         
         //Then thought bubble and order
         let orderFadeIn = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, Constants.standardFadeIn])
+        
+        let newSeq = orderFadeIn
         customerSprite.thoughtBubbleSprite.run(orderFadeIn)
-        grayBurger.run(orderFadeIn)
-        grayFries.run(orderFadeIn)
+        burgerSprite.runActionOnGraySprite(orderFadeIn)
+        friesSprite.runActionOnGraySprite(orderFadeIn)
         
         // At t=9 this customer gets their order finished
         let waitForFirstOrderDone = SKAction.wait(forDuration: 6.0)
         let burgerDone = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstOrderDone, Constants.foodFadeIn])
-        burgerSprite.run(burgerDone)
+        burgerSprite.runActionOnColorSprite(burgerDone)
         
         let checkOnBurger = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstOrderDone, Constants.waitForFoodFade, Constants.checkmarkFade])
-        burgerCheck.run(checkOnBurger)
+        burgerSprite.runActionOnCheckmarkSprite(checkOnBurger)
         
         let friesDone = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstOrderDone, Constants.waitForFoodFade, Constants.foodFadeIn])
-        friesSprite.run(friesDone)
+        friesSprite.runActionOnColorSprite(friesDone)
         
         let checkOnFries = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstOrderDone, Constants.waitForFoodFade, Constants.waitForFoodFade, Constants.checkmarkFade])
-        friesCheck.run(checkOnFries)
+        friesSprite.runActionOnCheckmarkSprite(checkOnFries)
     }
     
     func runRRSim() {
@@ -135,32 +89,30 @@ struct ThirdCustomer {
         //Then thought bubble and order
         let orderFadeIn = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, Constants.standardFadeIn])
         customerSprite.thoughtBubbleSprite.run(orderFadeIn)
-        grayBurger.run(orderFadeIn)
-        grayFries.run(orderFadeIn)
+        burgerSprite.runActionOnGraySprite(orderFadeIn)
+        friesSprite.runActionOnGraySprite(orderFadeIn)
         
         // At t=6, this customer gets one item in order completed
         let waitForFirstTurn = SKAction.wait(forDuration: 3.0)
         let burgerDone = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstTurn, Constants.foodFadeIn])
-        burgerSprite.run(burgerDone)
+        burgerSprite.runActionOnColorSprite(burgerDone)
         
         let checkOnBurger = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstTurn, Constants.waitForFoodFade, Constants.checkmarkFade])
-        burgerCheck.run(checkOnBurger)
+        burgerSprite.runActionOnCheckmarkSprite(checkOnBurger)
         
         //At t=15 this customer gets another turn
         let waitForSecondTurn = SKAction.wait(forDuration: 3.0)
         let friesDone = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstTurn, Constants.waitForFoodFade, Constants.waitForFoodFade, waitForSecondTurn, Constants.foodFadeIn])
-        friesSprite.run(friesDone)
+        friesSprite.runActionOnColorSprite(friesDone)
         
         let checkOnFries = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstTurn, Constants.waitForFoodFade, Constants.waitForFoodFade, waitForSecondTurn, Constants.waitForFoodFade, Constants.checkmarkFade])
-        friesCheck.run(checkOnFries)
+        friesSprite.runActionOnCheckmarkSprite(checkOnFries)
     }
     
     func resetSprites() {
         let fadeOut = SKAction.fadeOut(withDuration: 1.0)
-        let spritesToFade = [burgerCheck, friesCheck, burgerSprite, friesSprite, grayFries, grayBurger]
-        for sprite in spritesToFade {
-            sprite.run(fadeOut)
-        }
+        burgerSprite.runActionOnAllSprites(fadeOut)
+        friesSprite.runActionOnAllSprites(fadeOut)
         customerSprite.personSprite.run(fadeOut)
         customerSprite.thoughtBubbleSprite.run(fadeOut)
     }
