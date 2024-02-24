@@ -10,19 +10,18 @@ import SpriteKit
 
 struct FirstCustomer {
     private let scene: GameScene
-    
     private let customerSprite: CustomerSprite
-    
     private let burgerSprite, friesSprite, drinkSprite: FoodSprite
+    private let position: CGPoint = CGPoint(x: 384, y: 240)
     
     init(scene: GameScene) {
         self.scene = scene
-        customerSprite = CustomerSprite(scene: scene, customerTexture: "Person2", pos: Constants.secondCustomerPos)
+        customerSprite = CustomerSprite(scene: scene, customerTexture: "person1", pos: position)
         
         //Positions for three items
-        let topLeft = CGPoint(x: Constants.secondCustomerPos.x - 55, y: Constants.secondCustomerPos.y + 360)
-        let topRight = CGPoint(x: Constants.secondCustomerPos.x + 60, y: Constants.secondCustomerPos.y + 360)
-        let bottomCenter = CGPoint(x: Constants.secondCustomerPos.x, y: Constants.secondCustomerPos.y + 295)
+        let topLeft = CGPoint(x: position.x - 55, y: position.y + 360)
+        let topRight = CGPoint(x: position.x + 60, y: position.y + 360)
+        let bottomCenter = CGPoint(x: position.x, y: position.y + 295)
         
         burgerSprite = FoodSprite(scene: scene, position: topLeft, imageNamed: "burger")
         friesSprite = FoodSprite(scene: scene, position: topRight, imageNamed: "fries")
@@ -97,13 +96,12 @@ struct FirstCustomer {
     }
     
     func resetSprites() {
-        let fadeOut = SKAction.fadeOut(withDuration: 1.0)
         let spritesToFade = [burgerSprite, friesSprite, drinkSprite]
         for sprite in spritesToFade {
-            sprite.runActionOnAllSprites(fadeOut)
+            sprite.runActionOnAllSprites(Constants.standardFadeOut)
         }
-        customerSprite.personSprite.run(fadeOut)
-        customerSprite.thoughtBubbleSprite.run(fadeOut)
+        customerSprite.personSprite.run(Constants.standardFadeOut)
+        customerSprite.thoughtBubbleSprite.run(Constants.standardFadeOut)
     }
     
     private func startEntranceAnimation(_ delay: [SKAction]) {

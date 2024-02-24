@@ -12,14 +12,15 @@ struct ThirdCustomer {
     private let scene: GameScene
     private let customerSprite: CustomerSprite
     private let burgerSprite, friesSprite: FoodSprite
+    private let position = CGPoint(x: 128, y: 240)
     
     init(scene: GameScene) {
         self.scene = scene
-        customerSprite = CustomerSprite(scene: scene, customerTexture: "Person1", pos: Constants.firstCustomerPos)
+        customerSprite = CustomerSprite(scene: scene, customerTexture: "person4", pos: position)
         
         //Positions for three items
-        let centerLeft = CGPoint(x: Constants.firstCustomerPos.x - 55, y: Constants.firstCustomerPos.y + 330)
-        let centerRight = CGPoint(x: Constants.firstCustomerPos.x + 60, y: Constants.firstCustomerPos.y + 330)
+        let centerLeft = CGPoint(x: position.x - 55, y: position.y + 330)
+        let centerRight = CGPoint(x: position.x + 60, y: position.y + 330)
         
         burgerSprite = FoodSprite(scene: scene, position: centerLeft, imageNamed: "burger")
         friesSprite = FoodSprite(scene: scene, position: centerRight, imageNamed: "fries")
@@ -69,11 +70,10 @@ struct ThirdCustomer {
     }
     
     func resetSprites() {
-        let fadeOut = SKAction.fadeOut(withDuration: 1.0)
-        burgerSprite.runActionOnAllSprites(fadeOut)
-        friesSprite.runActionOnAllSprites(fadeOut)
-        customerSprite.personSprite.run(fadeOut)
-        customerSprite.thoughtBubbleSprite.run(fadeOut)
+        burgerSprite.runActionOnAllSprites(Constants.standardFadeOut)
+        friesSprite.runActionOnAllSprites(Constants.standardFadeOut)
+        customerSprite.personSprite.run(Constants.standardFadeOut)
+        customerSprite.thoughtBubbleSprite.run(Constants.standardFadeOut)
     }
     
     private func startEntranceAnimation(_ delay: [SKAction]) {

@@ -10,8 +10,8 @@ import SpriteKit
 
 struct DialogueOverlay {
     private let scene: GameScene
-    private let employeeSprite, background, textBubbleSprite, yeahButton, STCFButton, RRButton: SKSpriteNode
-    private var textSprite: SKLabelNode
+    private let employeeSprite, background, textBubbleSprite, yeahButton, STCFButton, RRButton, coolButton, fullscreenTextBgSprite: SKSpriteNode
+    private var textSprite, conclusionTextSprite: SKLabelNode
     private var buttonNotPressed: SKSpriteNode!
     private var buttonPressCount = 0
     private var paragraphStyle = NSMutableParagraphStyle()
@@ -19,14 +19,16 @@ struct DialogueOverlay {
     private var attributes: [NSAttributedString.Key: Any]
     private var attributedString: NSMutableAttributedString = NSMutableAttributedString(string: "")
     private let fifoText = "Serving orders in \"First In First Out\" order is easy to understand, but customers with small-sized orders wait for a long time if customers with large-sized orders are ahead! Do you have an idea how to improve things?"
-    private let stcfText = "By always completing the shortest orders first, we were able to service customers with small orders even when a large order was put in first! But now if a continuous stream of small orders come in, large orders never get serviced leading to starvation! How could we fix that?"
+    private let stcfText = "By always completing the shortest orders first, we were able to service customers with small orders even when a large order was put in first by preempting the long order! But now if a continuous stream of small orders come in, large orders never get serviced leading to starvation!"
     private let rrText = "By servicing orders in a cycle giving each customer one item of their order, we can increase the interactivity with each customer even if the wait time doesn't decrease. Customers are happy as they consistently get one item of their order and feel progress is being made!"
+    private let conclusionText = "You just learned the basics of a few CPU scheduling algorithms! These algorithms are used by a special program called the scheduler that determines what other programs get to run on the CPU, for how long, in what order, etc. The ones shown today were First In First Out (FIFO), Shortest Time To Completion First (STCF), and Round Robin (RR)! I hope you were able to pick up on the strengths and weaknesses of each algorithm, but most importantly understood that not all algorithms are complex! Many solutions to Computer Science problems take inspiration from ways we approach mundane problems (like serving fast food customers) in daily life! That means anyone can be a great programmer, yourself included! Thanks for playing!"
+    private let introText = "Hi! My name is Bob, and I need to work the lunch rush. I can only work on one item at a time, which takes me a few seconds, and I must find the best way to service the line of customers so they wait as little time as possible. Can you help me?"
     
     init(scene: GameScene) {
         self.scene = scene
         
         background = SKSpriteNode(color: .black, size: Constants.gameWindowSize)
-        background.position = CGPoint(x: Constants.gameWindowSize.width / 2, y: Constants.gameWindowSize.height / 2)
+        background.position = Constants.gameWindowCenter
         background.alpha = 0
         scene.addChild(background)
         
@@ -36,12 +38,19 @@ struct DialogueOverlay {
         employeeSprite.scale(to: CGSize(width: 384, height: 384))
         scene.addChild(employeeSprite)
         
-        textBubbleSprite = SKSpriteNode(imageNamed: "textbubble")
+        textBubbleSprite = SKSpriteNode(imageNamed: "text-bubble")
         textBubbleSprite.position = CGPoint(x: 667, y: 475)
         textBubbleSprite.texture?.filteringMode = .nearest
         textBubbleSprite.scale(to: CGSize(width: 690, height: 512))
         textBubbleSprite.alpha = 0
         scene.addChild(textBubbleSprite)
+        
+        fullscreenTextBgSprite = SKSpriteNode(imageNamed: "final-text-bg")
+        fullscreenTextBgSprite.position = Constants.gameWindowCenter
+        fullscreenTextBgSprite.texture?.filteringMode = .nearest
+        fullscreenTextBgSprite.scale(to: CGSize(width: 992, height: 992))
+        fullscreenTextBgSprite.alpha = 0
+        scene.addChild(fullscreenTextBgSprite)
         
         paragraphStyle =  NSMutableParagraphStyle()
         paragraphStyle.alignment = NSTextAlignment.center
@@ -55,7 +64,6 @@ struct DialogueOverlay {
                 .foregroundColor : UIColor.black
             ]
         
-        let introText = "Hi! I'm Bob, and feeling overwhelmed working the lunch hour rush. I need to find the best way to service the line of customers so they wait as little time as possible. Can you help me?"
         attributedString.mutableString.setString(introText)
         attributedString.setAttributes(attributes, range: NSMakeRange(0, introText.count))
         textSprite = SKLabelNode(attributedText: attributedString)
@@ -66,11 +74,32 @@ struct DialogueOverlay {
         textSprite.position = CGPoint(x: 700, y: 700)
         scene.addChild(textSprite)
         
-        yeahButton = SKSpriteNode(imageNamed: "yeahbutton")
+        let largeFont = font.withSize(22.0)
+        let largeTitleAttr: [NSAttributedString.Key: Any] = [
+            .font : largeFont,
+            .paragraphStyle : paragraphStyle,
+            .foregroundColor : UIColor.black
+        ]
+        let conclusionAttributedString = NSAttributedString(string: conclusionText, attributes: largeTitleAttr)
+        conclusionTextSprite = SKLabelNode(attributedText: conclusionAttributedString)
+        conclusionTextSprite.preferredMaxLayoutWidth = 900
+        conclusionTextSprite.numberOfLines = 0
+        conclusionTextSprite.verticalAlignmentMode = .center
+        conclusionTextSprite.alpha = 0
+        conclusionTextSprite.position = Constants.gameWindowCenter
+        scene.addChild(conclusionTextSprite)
+
+        yeahButton = SKSpriteNode(imageNamed: "yeah-button")
         yeahButton.name = "yeahbutton"
         yeahButton.position = CGPoint(x: 700, y: 150)
         yeahButton.texture?.filteringMode = .nearest
         yeahButton.alpha = 0
+        
+        coolButton = SKSpriteNode(imageNamed: "cool-button")
+        coolButton.name = "coolbutton"
+        coolButton.position = CGPoint(x: 700, y: 150)
+        coolButton.texture?.filteringMode = .nearest
+        coolButton.alpha = 0
         
         STCFButton = SKSpriteNode(imageNamed: "stcf-button")
         STCFButton.name = "stcfbutton"
@@ -89,6 +118,7 @@ struct DialogueOverlay {
         scene.addChild(yeahButton)
         scene.addChild(STCFButton)
         scene.addChild(RRButton)
+        scene.addChild(coolButton)
     }
     
     private func showCommonDialogElements() {
@@ -119,31 +149,37 @@ struct DialogueOverlay {
         yeahButton.run(textActionSequence)
     }
     
-    mutating func handleTouch(touch: UITouch, state: SimState) {
+    mutating func handleTouch(touch: UITouch) {
         let location = touch.location(in: scene)
         if let nodeAtTouch = self.scene.nodes(at: location).first {
             if nodeAtTouch.name == "yeahbutton" {
                 buttonPressedAnimation(on: yeahButton)
-                dismissOverlay(state: state)
-                fadeOutButtons(state: state)
+                dismissOverlay()
+                fadeOutButtons()
                 scene.runFIFOSim()
                 buttonPressCount += 1
             } else if nodeAtTouch.name == "stcfbutton" {
                 buttonPressedAnimation(on: STCFButton)
                 buttonNotPressed = RRButton
                 scene.resetCustomers()
-                dismissOverlay(state: state)
-                fadeOutButtons(state: state)
+                dismissOverlay()
+                fadeOutButtons()
                 scene.runSTCFSim()
                 buttonPressCount += 1
             } else if nodeAtTouch.name == "rrbutton" {
                 buttonPressedAnimation(on: RRButton)
                 buttonNotPressed = STCFButton
                 scene.resetCustomers()
-                fadeOutButtons(state: state)
-                dismissOverlay(state: state)
+                fadeOutButtons()
+                dismissOverlay()
                 scene.runRRSim()
                 buttonPressCount += 1
+            } else if nodeAtTouch.name == "coolbutton" {
+                buttonPressedAnimation(on: coolButton)
+                fadeOutButtons()
+                scene.resetCustomers()
+                dismissEmployeeSprite()
+                showConclusion()
             }
         }
     }
@@ -159,11 +195,17 @@ struct DialogueOverlay {
         on.run(actions)
     }
     
-    func dismissOverlay(state: SimState) {
+    func dismissOverlay() {
         let brightenWait = SKAction.wait(forDuration: 2.5)
         let brightenScreen = SKAction.fadeAlpha(to: 0, duration: 1.0)
         let backgroundActions = SKAction.sequence([brightenWait, brightenScreen])
         
+        dismissEmployeeSprite()
+        
+        background.run(backgroundActions)
+    }
+    
+    func dismissEmployeeSprite() {
         let wait = SKAction.wait(forDuration: 1.5)
         let slideOutAction = SKAction.move(to: CGPoint(x: -192, y: 192), duration: 1.0)
         slideOutAction.timingMode = .easeInEaseOut
@@ -175,11 +217,18 @@ struct DialogueOverlay {
         textSprite.run(textActionSequence)
         textBubbleSprite.run(textActionSequence)
         employeeSprite.run(actionSequence)
-        background.run(backgroundActions)
+    }
+    
+    func showConclusion() {
+        let wait = SKAction.wait(forDuration: 3.5)
+        let actions = SKAction.sequence([wait, Constants.standardFadeIn])
+        
+        fullscreenTextBgSprite.run(actions)
+        conclusionTextSprite.run(actions)
     }
         
-    func fadeOutButtons(state: SimState) {
-        for button in [yeahButton, RRButton, STCFButton] {
+    func fadeOutButtons() {
+        for button in [yeahButton, RRButton, STCFButton, coolButton] {
             button.run(SKAction.fadeOut(withDuration: 1.0))
         }
     }
@@ -207,13 +256,15 @@ struct DialogueOverlay {
         let fadeInAction = SKAction.fadeIn(withDuration: 1.0)
         let textActionSequence = SKAction.sequence([textWait, fadeInAction])
         
-        if (buttonPressCount == 1) {
+        if (buttonPressCount == 0) {
+            yeahButton.run(textActionSequence)
+        } else if (buttonPressCount == 1) {
             RRButton.run(textActionSequence)
             STCFButton.run(textActionSequence)
         } else if (buttonPressCount == 2) {
             buttonNotPressed.run(textActionSequence)
-        } else {
-            yeahButton.run(textActionSequence)
+        } else if (buttonPressCount == 3) {
+            coolButton.run(textActionSequence)
         }
     }
     

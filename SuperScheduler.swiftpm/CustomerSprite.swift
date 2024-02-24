@@ -10,24 +10,25 @@ import SpriteKit
 
 struct CustomerSprite {
     let scene: GameScene
-    
     let personSprite, thoughtBubbleSprite: SKSpriteNode
-    
+    private static let personSpriteSize = CGSize(width: 128, height: 256)
+    private static let thoughtBubbleSpriteSize = CGSize(width: 256, height: 256)
+    private static let thoughtBubbleOffset: CGFloat = 288
     
     init(scene: GameScene, customerTexture: String, pos: CGPoint) {
         self.scene = scene
         
         personSprite = SKSpriteNode(imageNamed: customerTexture)
         personSprite.texture?.filteringMode = .nearest
-        personSprite.scale(to: CGSize(width: Constants.personSpriteWidth, height: Constants.personSpriteHeight))
+        personSprite.scale(to: CustomerSprite.personSpriteSize)
         personSprite.position = pos
         personSprite.alpha = 0
         scene.addChild(personSprite)
         
-        thoughtBubbleSprite = SKSpriteNode(imageNamed: "thought_bubble")
+        thoughtBubbleSprite = SKSpriteNode(imageNamed: "thought-bubble")
         thoughtBubbleSprite.texture?.filteringMode = .nearest
-        thoughtBubbleSprite.scale(to: CGSize(width: 256, height: 256))
-        thoughtBubbleSprite.position = CGPoint(x: pos.x, y: pos.y + Constants.thoughtBubbleOffset)
+        thoughtBubbleSprite.scale(to: CustomerSprite.thoughtBubbleSpriteSize)
+        thoughtBubbleSprite.position = CGPoint(x: pos.x, y: pos.y + CustomerSprite.thoughtBubbleOffset)
         thoughtBubbleSprite.alpha = 0
         scene.addChild(thoughtBubbleSprite)
     }

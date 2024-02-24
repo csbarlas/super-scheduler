@@ -12,13 +12,14 @@ struct FourthCustomer {
     private let scene: GameScene
     private let customerSprite: CustomerSprite
     private let burgerSprite: FoodSprite
+    private let position = CGPoint(x: 896, y: 240)
     
     init(scene: GameScene) {
         self.scene = scene
-        customerSprite = CustomerSprite(scene: scene, customerTexture: "Person3", pos: Constants.fourthCustomerPos)
+        customerSprite = CustomerSprite(scene: scene, customerTexture: "person2", pos: position)
         
         //Positions for item
-        let center = CGPoint(x: Constants.fourthCustomerPos.x, y: Constants.fourthCustomerPos.y + 330)
+        let center = CGPoint(x: position.x, y: position.y + 330)
         
         burgerSprite = FoodSprite(scene: scene, position: center, imageNamed: "burger")
     }
@@ -62,10 +63,9 @@ struct FourthCustomer {
     }
     
     func resetSprites() {
-        let fadeOut = SKAction.fadeOut(withDuration: 1.0)
-        burgerSprite.runActionOnAllSprites(fadeOut)
-        customerSprite.personSprite.run(fadeOut)
-        customerSprite.thoughtBubbleSprite.run(fadeOut)
+        burgerSprite.runActionOnAllSprites(Constants.standardFadeOut)
+        customerSprite.personSprite.run(Constants.standardFadeOut)
+        customerSprite.thoughtBubbleSprite.run(Constants.standardFadeOut)
     }
     
     private func startEntranceAnimation(_ delay: [SKAction]) {

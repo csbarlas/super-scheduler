@@ -15,10 +15,8 @@ class GameScene: SKScene {
     private var fourthCustomer: FourthCustomer!
     private var dialogueOverlay: DialogueOverlay!
     
-    private var simState: SimState = .Intro
-    
     override func didMove(to view: SKView) {
-        let background = SKTexture(imageNamed: "background")
+        let background = SKTexture(imageNamed: "background3")
         background.filteringMode = .nearest
         let bgNode = SKSpriteNode(texture: background)
         addChild(bgNode)
@@ -41,12 +39,11 @@ class GameScene: SKScene {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let firstTouch = touches.first {
-            dialogueOverlay.handleTouch(touch: firstTouch, state: simState)
+            dialogueOverlay.handleTouch(touch: firstTouch)
         }
     }
     
     func runFIFOSim() {
-        simState = .FIFO
         firstCustomer.runFIFOSim()
         secondCustomer.runFIFOSim()
         thirdCustomer.runFIFOSim()
@@ -62,7 +59,6 @@ class GameScene: SKScene {
     }
     
     func runSTCFSim() {
-        simState = .STCF
         firstCustomer.runSTCFSim()
         secondCustomer.runSTCFSim()
         thirdCustomer.runSTCFSim()
@@ -70,7 +66,6 @@ class GameScene: SKScene {
     }
     
     func runRRSim() {
-        simState = .RR
         firstCustomer.runRRSim()
         secondCustomer.runRRSim()
         thirdCustomer.runRRSim()
