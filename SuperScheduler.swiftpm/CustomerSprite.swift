@@ -1,6 +1,6 @@
 //
 //  CustomerSprite.swift
-//  AppPlaygroundTest1
+//  Super Scheduler
 //
 //  Created by Christopher Barlas on 2/16/24.
 //
@@ -34,7 +34,7 @@ struct CustomerSprite {
     }
     
     func startEntranceAnimation(_ delay: [SKAction]) {
-        let actions = SKAction.sequence(delay + [Constants.standardFadeIn])
+        let actions = SKAction.sequence(delay + [CommonData.standardFadeIn])
         personSprite.run(actions)
         thoughtBubbleSprite.run(actions)
     }

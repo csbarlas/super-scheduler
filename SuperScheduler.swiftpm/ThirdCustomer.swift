@@ -1,6 +1,6 @@
 //
 //  ThirdCustomer.swift
-//  SwiftStudentChallenge
+//  Super Scheduler
 //
 //  Created by Christopher Barlas on 2/17/24.
 //
@@ -8,7 +8,7 @@
 import Foundation
 import SpriteKit
 
-struct ThirdCustomer {
+struct ThirdCustomer: Customer {
     private let scene: GameScene
     private let customerSprite: CustomerSprite
     private let burgerSprite, friesSprite: FoodSprite
@@ -28,52 +28,52 @@ struct ThirdCustomer {
     
     func runFIFOSim() {
         let waitToEnter = SKAction.wait(forDuration: 3.0)
-        let entranceDelay = [Constants.waitForDialog, Constants.standardWait, waitToEnter]
+        let entranceDelay = [CommonData.waitForDialog, CommonData.standardWait, waitToEnter]
         startEntranceAnimation(entranceDelay)
         
         let waitForFirstOrderDone = SKAction.wait(forDuration: 9.0)
-        let burgerDelay = [Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstOrderDone]
+        let burgerDelay = [CommonData.waitForDialog, CommonData.standardWait, waitToEnter, waitForFirstOrderDone]
         burgerSprite.startCompletionAnimation(burgerDelay)
         
-        let friesDelay = [Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstOrderDone, Constants.waitForFoodFade]
+        let friesDelay = [CommonData.waitForDialog, CommonData.standardWait, waitToEnter, waitForFirstOrderDone, CommonData.waitForFoodFade]
         friesSprite.startCompletionAnimation(friesDelay)
     }
     
     func runSTCFSim() {
         let waitToEnter = SKAction.wait(forDuration: 3.0)
-        let entranceDelay = [Constants.waitForDialog, Constants.standardWait, waitToEnter]
+        let entranceDelay = [CommonData.waitForDialog, CommonData.standardWait, waitToEnter]
         startEntranceAnimation(entranceDelay)
         
         // At t=9 this customer gets their order finished
         let waitForFirstOrderDone = SKAction.wait(forDuration: 6.0)
-        let burgerDelay = [Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstOrderDone]
+        let burgerDelay = [CommonData.waitForDialog, CommonData.standardWait, waitToEnter, waitForFirstOrderDone]
         burgerSprite.startCompletionAnimation(burgerDelay)
         
-        let friesDelay = [Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstOrderDone, Constants.waitForFoodFade]
+        let friesDelay = [CommonData.waitForDialog, CommonData.standardWait, waitToEnter, waitForFirstOrderDone, CommonData.waitForFoodFade]
         friesSprite.startCompletionAnimation(friesDelay)
     }
     
     func runRRSim() {
         let waitToEnter = SKAction.wait(forDuration: 3.0)
-        let entranceDelay = [Constants.waitForDialog, Constants.standardWait, waitToEnter]
+        let entranceDelay = [CommonData.waitForDialog, CommonData.standardWait, waitToEnter]
         startEntranceAnimation(entranceDelay)
         
         // At t=6, this customer gets one item in order completed
         let waitForFirstTurn = SKAction.wait(forDuration: 3.0)
-        let burgerDelay = [Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstTurn]
+        let burgerDelay = [CommonData.waitForDialog, CommonData.standardWait, waitToEnter, waitForFirstTurn]
         burgerSprite.startCompletionAnimation(burgerDelay)
         
         //At t=15 this customer gets another turn
         let waitForSecondTurn = SKAction.wait(forDuration: 3.0)
-        let friesDelay = [Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstTurn, Constants.waitForFoodFade, Constants.waitForFoodFade, waitForSecondTurn]
+        let friesDelay = [CommonData.waitForDialog, CommonData.standardWait, waitToEnter, waitForFirstTurn, CommonData.waitForFoodFade, CommonData.waitForFoodFade, waitForSecondTurn]
         friesSprite.startCompletionAnimation(friesDelay)
     }
     
     func resetSprites() {
-        burgerSprite.runActionOnAllSprites(Constants.standardFadeOut)
-        friesSprite.runActionOnAllSprites(Constants.standardFadeOut)
-        customerSprite.personSprite.run(Constants.standardFadeOut)
-        customerSprite.thoughtBubbleSprite.run(Constants.standardFadeOut)
+        burgerSprite.runActionOnAllSprites(CommonData.standardFadeOut)
+        friesSprite.runActionOnAllSprites(CommonData.standardFadeOut)
+        customerSprite.personSprite.run(CommonData.standardFadeOut)
+        customerSprite.thoughtBubbleSprite.run(CommonData.standardFadeOut)
     }
     
     private func startEntranceAnimation(_ delay: [SKAction]) {

@@ -1,6 +1,6 @@
 //
 //  FirstCustomer.swift
-//  SwiftStudentChallenge
+//  Super Scheduler
 //
 //  Created by Christopher Barlas on 2/17/24.
 //
@@ -8,7 +8,7 @@
 import Foundation
 import SpriteKit
 
-struct FirstCustomer {
+struct FirstCustomer: Customer {
     private let scene: GameScene
     private let customerSprite: CustomerSprite
     private let burgerSprite, friesSprite, drinkSprite: FoodSprite
@@ -30,78 +30,78 @@ struct FirstCustomer {
     
     func runFIFOSim() {
         //Show customer
-        startEntranceAnimation([Constants.waitForDialog])
+        startEntranceAnimation([CommonData.waitForDialog])
         
-        let burgerDelay = [Constants.waitForDialog, Constants.standardWait]
+        let burgerDelay = [CommonData.waitForDialog, CommonData.standardWait]
         burgerSprite.startCompletionAnimation(burgerDelay)
         
-        let friesDelay = [Constants.waitForDialog, Constants.standardWait, Constants.waitForFoodFade]
+        let friesDelay = [CommonData.waitForDialog, CommonData.standardWait, CommonData.waitForFoodFade]
         friesSprite.startCompletionAnimation(friesDelay)
         
-        let drinkDelay = [Constants.waitForDialog, Constants.standardWait, Constants.waitForFoodFade, Constants.waitForFoodFade]
+        let drinkDelay = [CommonData.waitForDialog, CommonData.standardWait, CommonData.waitForFoodFade, CommonData.waitForFoodFade]
         drinkSprite.startCompletionAnimation(drinkDelay)
     }
     
     func runSTCFSim() {
         //Show customer
-        startEntranceAnimation([Constants.waitForDialog])
+        startEntranceAnimation([CommonData.waitForDialog])
         
         //Only burger completes before two new customers enter
-        let burgerDelay = [Constants.waitForDialog, Constants.standardWait]
+        let burgerDelay = [CommonData.waitForDialog, CommonData.standardWait]
         burgerSprite.startCompletionAnimation(burgerDelay)
         // Done at t=3
         
         //At t=15, this customer starts getting serviced
         let waitForTurn = SKAction.wait(forDuration: 12.0)
         
-        let friesDelay = [Constants.waitForDialog, Constants.standardWait, Constants.waitForFoodFade, waitForTurn]
+        let friesDelay = [CommonData.waitForDialog, CommonData.standardWait, CommonData.waitForFoodFade, waitForTurn]
         friesSprite.startCompletionAnimation(friesDelay)
         
-        let drinkDelay = [Constants.waitForDialog, Constants.standardWait, Constants.waitForFoodFade, waitForTurn, Constants.waitForFoodFade]
+        let drinkDelay = [CommonData.waitForDialog, CommonData.standardWait, CommonData.waitForFoodFade, waitForTurn, CommonData.waitForFoodFade]
         drinkSprite.startCompletionAnimation(drinkDelay)
         
         let showSTCFDialog = SKAction.run {
             scene.showSTCFDialog()
         }
         
-        let showDialogSeq = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, Constants.waitForFoodFade, waitForTurn, Constants.waitForFoodFade, Constants.waitForFoodFade, showSTCFDialog])
+        let showDialogSeq = SKAction.sequence([CommonData.waitForDialog, CommonData.standardWait, CommonData.waitForFoodFade, waitForTurn, CommonData.waitForFoodFade, CommonData.waitForFoodFade, showSTCFDialog])
         scene.run(showDialogSeq)
     }
     
     func runRRSim() {
         //TODO: I think there used to be an error here
         //Show customer
-        startEntranceAnimation([Constants.waitForDialog])
+        startEntranceAnimation([CommonData.waitForDialog])
         
         //Only burger completes before two new customers enter and they get their turn
-        let burgerDelay = [Constants.waitForDialog, Constants.standardWait]
+        let burgerDelay = [CommonData.waitForDialog, CommonData.standardWait]
         burgerSprite.startCompletionAnimation(burgerDelay)
         
         //At t=12, this customer gets another turn
         let waitForTurn = SKAction.wait(forDuration: 9.0)
-        let friesDelay = [Constants.waitForDialog, Constants.standardWait, Constants.waitForFoodFade, waitForTurn]
+        let friesDelay = [CommonData.waitForDialog, CommonData.standardWait, CommonData.waitForFoodFade, waitForTurn]
         friesSprite.startCompletionAnimation(friesDelay)
         
         //At t=18 this customer gets last turn
         let waitForLastTurn = SKAction.wait(forDuration: 3.0)
-        let drinkDelay = [Constants.waitForDialog, Constants.standardWait, Constants.waitForFoodFade, waitForTurn, Constants.waitForFoodFade, Constants.waitForFoodFade]
+        let drinkDelay = [CommonData.waitForDialog, CommonData.standardWait, CommonData.waitForFoodFade, waitForTurn, CommonData.waitForFoodFade, CommonData.waitForFoodFade]
         drinkSprite.startCompletionAnimation(drinkDelay)
         
         let showSTCFDialog = SKAction.run {
             scene.showRRDialog()
         }
         
-        let showDialogSeq = SKAction.sequence([Constants.waitForDialog, Constants.standardWait, Constants.waitForFoodFade, waitForTurn, Constants.waitForFoodFade, Constants.waitForFoodFade, Constants.waitForFoodFade, showSTCFDialog])
+        let showDialogSeq = SKAction.sequence([CommonData.waitForDialog, CommonData.standardWait, CommonData.waitForFoodFade, waitForTurn, CommonData.waitForFoodFade, CommonData.waitForFoodFade, CommonData.waitForFoodFade, showSTCFDialog])
         scene.run(showDialogSeq)
     }
     
     func resetSprites() {
         let spritesToFade = [burgerSprite, friesSprite, drinkSprite]
         for sprite in spritesToFade {
-            sprite.runActionOnAllSprites(Constants.standardFadeOut)
+            sprite.runActionOnAllSprites(CommonData.standardFadeOut)
         }
-        customerSprite.personSprite.run(Constants.standardFadeOut)
-        customerSprite.thoughtBubbleSprite.run(Constants.standardFadeOut)
+        customerSprite.personSprite.run(CommonData.standardFadeOut)
+        customerSprite.thoughtBubbleSprite.run(CommonData.standardFadeOut)
     }
     
     private func startEntranceAnimation(_ delay: [SKAction]) {

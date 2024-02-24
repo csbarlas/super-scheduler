@@ -1,6 +1,6 @@
 //
 //  DialogueOverlay.swift
-//  SwiftStudentChallenge
+//  Super Scheduler
 //
 //  Created by Christopher Barlas on 2/16/24.
 //
@@ -27,8 +27,8 @@ struct DialogueOverlay {
     init(scene: GameScene) {
         self.scene = scene
         
-        background = SKSpriteNode(color: .black, size: Constants.gameWindowSize)
-        background.position = Constants.gameWindowCenter
+        background = SKSpriteNode(color: .black, size: CommonData.gameWindowSize)
+        background.position = CommonData.gameWindowCenter
         background.alpha = 0
         scene.addChild(background)
         
@@ -46,7 +46,7 @@ struct DialogueOverlay {
         scene.addChild(textBubbleSprite)
         
         fullscreenTextBgSprite = SKSpriteNode(imageNamed: "final-text-bg")
-        fullscreenTextBgSprite.position = Constants.gameWindowCenter
+        fullscreenTextBgSprite.position = CommonData.gameWindowCenter
         fullscreenTextBgSprite.texture?.filteringMode = .nearest
         fullscreenTextBgSprite.scale(to: CGSize(width: 992, height: 992))
         fullscreenTextBgSprite.alpha = 0
@@ -86,7 +86,7 @@ struct DialogueOverlay {
         conclusionTextSprite.numberOfLines = 0
         conclusionTextSprite.verticalAlignmentMode = .center
         conclusionTextSprite.alpha = 0
-        conclusionTextSprite.position = Constants.gameWindowCenter
+        conclusionTextSprite.position = CommonData.gameWindowCenter
         scene.addChild(conclusionTextSprite)
 
         yeahButton = SKSpriteNode(imageNamed: "yeah-button")
@@ -221,7 +221,7 @@ struct DialogueOverlay {
     
     func showConclusion() {
         let wait = SKAction.wait(forDuration: 3.5)
-        let actions = SKAction.sequence([wait, Constants.standardFadeIn])
+        let actions = SKAction.sequence([wait, CommonData.standardFadeIn])
         
         fullscreenTextBgSprite.run(actions)
         conclusionTextSprite.run(actions)

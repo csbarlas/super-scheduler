@@ -7,9 +7,9 @@ struct ContentView: View {
     var scene = GameScene()
     
     init() {
-        scene.size = Constants.gameWindowSize
+        scene.size = CommonData.gameWindowSize
         scene.scaleMode = .aspectFit
-        scene.size = Constants.gameWindowSize
+        scene.size = CommonData.gameWindowSize
     }
     
     var body: some View {

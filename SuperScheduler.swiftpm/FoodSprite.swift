@@ -20,14 +20,14 @@ struct FoodSprite {
         
         for sprite in [colorSprite, graySprite] {
             sprite.texture?.filteringMode = .nearest
-            sprite.scale(to: Constants.foodSpriteSize)
+            sprite.scale(to: CommonData.foodSpriteSize)
             sprite.position = position
             sprite.alpha = 0
         }
         
         checkmarkSprite = SKSpriteNode(imageNamed: "checkmark")
         checkmarkSprite.texture?.filteringMode = .nearest
-        checkmarkSprite.scale(to: Constants.checkmarkSpriteSize)
+        checkmarkSprite.scale(to: CommonData.checkmarkSpriteSize)
         checkmarkSprite.position = position
         checkmarkSprite.alpha = 0
         
@@ -47,15 +47,15 @@ struct FoodSprite {
     }
     
     func startCompletionAnimation(_ delay: [SKAction]) {
-        let foodFadeIn = SKAction.sequence(delay + [Constants.foodFadeIn])
+        let foodFadeIn = SKAction.sequence(delay + [CommonData.foodFadeIn])
         colorSprite.run(foodFadeIn)
         
-        let checkFadeIn = SKAction.sequence(delay + [Constants.waitForFoodFade, Constants.checkmarkFade])
+        let checkFadeIn = SKAction.sequence(delay + [CommonData.waitForFoodFade, CommonData.checkmarkFade])
         checkmarkSprite.run(checkFadeIn)
     }
     
     func startEntranceAnimation(_ delay: [SKAction]) {
-        let actions = SKAction.sequence(delay + [Constants.standardFadeIn])
+        let actions = SKAction.sequence(delay + [CommonData.standardFadeIn])
         graySprite.run(actions)
     }
 }

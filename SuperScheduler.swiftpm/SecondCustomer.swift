@@ -1,6 +1,6 @@
 //
 //  SecondCustomer.swift
-//  SwiftStudentChallenge
+//  Super Scheduler
 //
 //  Created by Christopher Barlas on 2/17/24.
 //
@@ -8,7 +8,7 @@
 import Foundation
 import SpriteKit
 
-struct SecondCustomer {
+struct SecondCustomer: Customer {
     private let scene: GameScene
     private let customerSprite: CustomerSprite
     private let drinkSprite: FoodSprite
@@ -27,23 +27,23 @@ struct SecondCustomer {
     func runFIFOSim() {
         //Show customer
         let waitToEnter = SKAction.wait(forDuration: 3.0)
-        let entranceDelay = [Constants.waitForDialog, Constants.standardWait, waitToEnter]
+        let entranceDelay = [CommonData.waitForDialog, CommonData.standardWait, waitToEnter]
         startEntranceAnimation(entranceDelay)
                 
         let waitForFirstOrderDone = SKAction.wait(forDuration: 6.0)
         
-        let drinkStartDelay = [Constants.waitForDialog, Constants.standardWait, waitToEnter, waitForFirstOrderDone]
+        let drinkStartDelay = [CommonData.waitForDialog, CommonData.standardWait, waitToEnter, waitForFirstOrderDone]
         drinkSprite.startCompletionAnimation(drinkStartDelay)
     }
     
     func runSTCFSim() {
         //Time after sim start
         let waitToEnter = SKAction.wait(forDuration: 3.0)
-        let entranceDelay = [Constants.waitForDialog, Constants.standardWait, waitToEnter]
+        let entranceDelay = [CommonData.waitForDialog, CommonData.standardWait, waitToEnter]
         startEntranceAnimation(entranceDelay)
         
         //Second customer has shortest order at t=3, so drink gets worked on
-        let drinkDelay = [Constants.waitForDialog, Constants.standardWait, waitToEnter]
+        let drinkDelay = [CommonData.waitForDialog, CommonData.standardWait, waitToEnter]
         drinkSprite.startCompletionAnimation(drinkDelay)
         //Thats all for this customer
     }
@@ -51,20 +51,20 @@ struct SecondCustomer {
     func runRRSim() {
         //Time after sim start
         let waitToEnter = SKAction.wait(forDuration: 3.0)
-        let entranceDelay = [Constants.waitForDialog, Constants.standardWait, waitToEnter]
+        let entranceDelay = [CommonData.waitForDialog, CommonData.standardWait, waitToEnter]
         startEntranceAnimation(entranceDelay)
         
         //Second customer has order at t=3, so drink gets worked on
-        let drinkDelay = [Constants.waitForDialog, Constants.standardWait, waitToEnter]
+        let drinkDelay = [CommonData.waitForDialog, CommonData.standardWait, waitToEnter]
         drinkSprite.startCompletionAnimation(drinkDelay)
         
         //This customer is done
     }
     
     func resetSprites() {
-        drinkSprite.runActionOnAllSprites(Constants.standardFadeOut)
-        customerSprite.personSprite.run(Constants.standardFadeOut)
-        customerSprite.thoughtBubbleSprite.run(Constants.standardFadeOut)
+        drinkSprite.runActionOnAllSprites(CommonData.standardFadeOut)
+        customerSprite.personSprite.run(CommonData.standardFadeOut)
+        customerSprite.thoughtBubbleSprite.run(CommonData.standardFadeOut)
     }
     
     private func startEntranceAnimation(_ delay: [SKAction]) {
