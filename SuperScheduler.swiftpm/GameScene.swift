@@ -12,7 +12,7 @@ class GameScene: SKScene {
     private var dialogueOverlay: DialogueOverlay!
     
     override func didMove(to view: SKView) {
-        let background = SKTexture(imageNamed: "background3")
+        let background = SKTexture(imageNamed: "background")
         background.filteringMode = .nearest
         let bgNode = SKSpriteNode(texture: background)
         addChild(bgNode)

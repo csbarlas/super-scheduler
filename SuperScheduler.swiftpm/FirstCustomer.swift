@@ -69,7 +69,6 @@ struct FirstCustomer: Customer {
     }
     
     func runRRSim() {
-        //TODO: I think there used to be an error here
         //Show customer
         startEntranceAnimation([CommonData.waitForDialog])
         
@@ -84,7 +83,7 @@ struct FirstCustomer: Customer {
         
         //At t=18 this customer gets last turn
         let waitForLastTurn = SKAction.wait(forDuration: 3.0)
-        let drinkDelay = [CommonData.waitForDialog, CommonData.standardWait, CommonData.waitForFoodFade, waitForTurn, CommonData.waitForFoodFade, CommonData.waitForFoodFade]
+        let drinkDelay = [CommonData.waitForDialog, CommonData.standardWait, CommonData.waitForFoodFade, waitForTurn, CommonData.waitForFoodFade, waitForLastTurn]
         drinkSprite.startCompletionAnimation(drinkDelay)
         
         let showSTCFDialog = SKAction.run {
